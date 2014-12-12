@@ -17,16 +17,19 @@ dataaccess.bootup("events.db");
 app.use(express.static(__dirname + '/public'));
 
 function logdb(dataaccess) {
-    this.list = [];
     this.data_access = dataaccess;
 }
 
+logdb.prototype.top = function (count, back) {
+    return this.data_access.top(count, back);
+};
+
 logdb.prototype.log = function (item) {
-    this.list.push(item);
     this.data_access.push(item);
-}
-logdb.prototype.get = function () {
-    return this.list;
+};
+
+logdb.prototype.get = function (back) {
+    return this.data_access.get(back);
 };
 
 var logdb1 = new logdb(dataaccess);
@@ -38,25 +41,63 @@ function Item(id, name, date, ip) {
     this.ip = ip;
 }
 
+function toDateTime(secs) {
+    var t = new Date();
+    t.setTime(secs);
+    return t;
+}
+
+app.get('/top/:number/', function (req, res) {
+    res.writeHead(200, {
+        'Content-Type': 'text/html'
+    });
+    var numberInput = req.params.number;
+    var limitNumber = parseInt(numberInput);
+
+    var callb = function (values) {
+
+        var list = values;
+        var content = "";
+        if (list.length > 0) {
+            for (var i = 0; i < list.length; i++) {
+                console.log(list[i]);
+                content = content + "<li>@" + toDateTime(list[i].date).toLocaleTimeString() + " " + list[i].id + " " + list[i].name + " - from - " + list[i].ip + "</li>";
+
+            }
+        } else {
+            content = "<li>No items logged yet."
+        }
+
+        res.write("<html><body><h3>Listing all events logged</h3>" +
+            "<ul>" + content + "</ul>" +
+            "</body></html>");
+        res.end();
+    };
+    logdb1.top(limitNumber, callb);
+});
+
 app.get('/list/', function (req, res) {
     res.writeHead(200, {
         'Content-Type': 'text/html'
     });
-    var list = logdb1.get();
-    //console.log(list);
-    var content = "";
-    if (list.length > 0) {
-        for (var i = 0; i < list.length; i++) {
-            content = content + "<li>@" + list[i].date.toLocaleTimeString() + " " + list[i].id + " " + list[i].name + " - from - " + list[i].ip + "</li>";
-        }
-    } else {
-        content = "<li>No items logged yet."
-    }
 
-    res.write("<html><body><h3>Listing all events logged</h3>" +
-        "<ul>" + content + "</ul>" +
-        "</body></html>");
-    res.end();
+    var back = function (list) {
+        var content = "";
+        if (list.length > 0) {
+            for (var i = 0; i < list.length; i++) {
+                content = content + "<li>@" + toDateTime(list[i].date).toLocaleTimeString() + " " + list[i].id + " " + list[i].name + " - from - " + list[i].ip + "</li>";
+            }
+        } else {
+            content = "<li>No items logged yet."
+        }
+
+        res.write("<html><body><h3>Listing all events logged</h3>" +
+            "<ul>" + content + "</ul>" +
+            "</body></html>");
+        res.end();
+    };
+
+    logdb1.get(back);
 });
 
 app.get('/log/:id/:name', function (req, res) {
