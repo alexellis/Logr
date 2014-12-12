@@ -60,9 +60,7 @@ app.get('/top/:number/', function (req, res) {
         var content = "";
         if (list.length > 0) {
             for (var i = 0; i < list.length; i++) {
-                console.log(list[i]);
                 content = content + "<li>@" + toDateTime(list[i].date).toLocaleTimeString() + " " + list[i].id + " " + list[i].name + " - from - " + list[i].ip + "</li>";
-
             }
         } else {
             content = "<li>No items logged yet."
