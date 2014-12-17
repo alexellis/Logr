@@ -4,8 +4,7 @@
     <script type="application/javascript" src="jquery-2.1.1.min.js"></script>
     <script type="application/javascript" src="logrClient.js"></script>
     <script type="application/javascript" src="indexScript.js"></script>
-
-
+    <link rel="stylesheet" type="text/css" href="/index.css">
     <title>
         Logr
     </title>
@@ -13,11 +12,19 @@
 
 <body>
     <h3>Logr index</h3>
-    <p><span id="Ready">Ready? No</span>
+    <p>Select one of the items below
     </p>
     <ul>
-        <li><a id="clickList" href="/list">List all events logged.</a>
-            <li><a href="/log/openedpage/logtestevent">Log event from index.</a>
+        <li><a id="clickList" href="/today/">List all events logged today.</a></li>
+        <li><a id="clickList" href="/list">List all events logged.</a></li>
+        <li><a href="/log/openedpage/logtestevent">Log test event</a></li>
+    </ul>
+    List top number of events
+    <ul>
+        <li><a id="clickList" href="/top/25/">Top 25.</a></li>
+        <li><a id="clickList" href="/top/50/">Top 50.</a></li>
+        <li><a id="clickList" href="/top/150/">Top 150.</a></li>
+        <li><a id="clickList" href="/top/200/">Top 200.</a></li>
     </ul>
 </body>
 
