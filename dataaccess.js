@@ -36,19 +36,15 @@ dataaccess.bootup = function (file) {
 
 dataaccess.get = function (back) {
     var self = dataaccess;
-    var rowz = [];
     self.db.serialize(function () {
         self.db.all("SELECT * FROM Event order by date desc;", function (err, rows) {
-            rowz = rows;
-            back(rowz);
+            back(rows);
         });
     });
-    return rowz;
 };
 
 dataaccess.today = function (back) {
     var self = dataaccess;
-    var rowz = [];
     self.db.serialize(function () {
         var startDate = new Date();
         startDate.setUTCHours(0,0,0,0);
@@ -56,31 +52,24 @@ dataaccess.today = function (back) {
         endDate.setUTCHours(23,59,59,59);
 
         self.db.all("SELECT * FROM Event WHERE date between "+startDate.getTime()+" AND "+endDate.getTime()+" order by date desc;", function (err, rows) {
-            rowz = rows;
-            back(rowz);
+            back(rows);
         });
     });
-    return rowz;
 };
 
 dataaccess.top = function (number, back) {
     var self = dataaccess;
-    var rowz = [];
     self.db.serialize(function () {
         self.db.all("SELECT * FROM Event order by date desc LIMIT " + number + ";", function (err, rows) {
-            rowz = rows;
-            back(rowz);
+            back(rows);
         });
     });
-    return rowz;
 };
 
 dataaccess.push = function (obj) {
     var self = dataaccess;
-    //console.log("this: " + self);
-    //console.log(self.db);
     self.db.serialize(function () {
-        self.db.run("INSERT INTO Event (id,name,date,ip) VALUES (?,?,?,?)", obj.id, obj.name, obj.date.getTime(), obj.ip);
+        self.db.run("INSERT INTO Event (id,name,date,ip) VALUES (?,?,?,?)", obj.id.trim(), obj.name.trim(), obj.date.getTime(), obj.ip);
     });
 };
 
